@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackClient", "SlackClient\SlackClient.csproj", "{7B60A00F-53A1-4E06-9AC9-BCAA2044ACA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackClientTest", "SlackClientTest\SlackClientTest.csproj", "{79C7ED38-88EE-44D0-9A92-AACFAA68264C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7B60A00F-53A1-4E06-9AC9-BCAA2044ACA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B60A00F-53A1-4E06-9AC9-BCAA2044ACA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B60A00F-53A1-4E06-9AC9-BCAA2044ACA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
