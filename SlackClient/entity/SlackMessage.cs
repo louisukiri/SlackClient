@@ -1,38 +1,97 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Slack.Client.entity
 {
     public class SlackMessage
     {
+        private IList<SlackAttachment> _attachments;  
         public string Username { get; set; }
-        public IList<SlackAttachment> Attachments { get; set; }
-    }
+        public IReadOnlyList<SlackAttachment> Attachments {
+            get { return _attachments.ToList(); }
+        }
 
-    public class SlackAttachment
-    {
-        public string Fallback { get; set; }
-        public string Color { get; set; }
-        public string Pretext { get; set; }
-        public SlackAuthor Author { get; set; }
-        public LinkedElement Title { get; set; }
-        public string Text { get; set; }
-        public IList<SlackField> Fields { get; set; } 
-    }
+        public string Message { get; private set; }
 
-    public class LinkedElement
-    {
-        public string Name { get; set; }
-        public string Link { get; set; }
-    }
-    public class SlackAuthor: LinkedElement
-    {
-        public string Icon { get; set; }
-    }
+        public SlackMessage()
+        {
+            _attachments = new List<SlackAttachment>();
+        }
+        public SlackMessage SetMessage(string message)
+        {
+            Message = message;
+            return this;
+        }
 
-    public class SlackField
+        public SlackMessage Attach(SlackAttachment attachment)
+        {
+            _attachments.Add(attachment);
+            return this;
+        }
+
+        private SlackAttachment LastAttachment
+        {
+            get
+            {
+                if (!_attachments.Any())
+                {
+                    Attach(new SlackAttachment());
+                }
+                return _attachments.Last();
+            }
+        }
+        public SlackMessage Color(Color color)
+        {
+            LastAttachment.Color = color;
+            return this;
+        }
+
+        public SlackMessage As(string authorName, string authorIconUri="", string authorLinkUri="")
+        {
+            Uri authorLink;
+            Uri authorIcon;
+            try
+            {
+                authorLink = new Uri(authorLinkUri);
+            }
+            catch (Exception)
+            {
+                authorLink = null;
+            }
+            try
+            {
+                authorIcon = new Uri(authorIconUri);
+            }
+            catch (Exception)
+            {
+                authorIcon = null;
+            }
+            return As(new SlackAuthor{
+                Name = authorName
+                ,Icon = authorIcon
+                ,Link = authorLink
+            });
+        }
+        public SlackMessage As(SlackAuthor author)
+        {
+            LastAttachment.Author = author;
+            return this;
+        }
+
+        public SlackAuthor Author {
+            get
+            {
+                return !_attachments.Any() ? null : LastAttachment.Author;
+            }
+        }
+    }
+    public static class ColorExtension
     {
-        public string Title { get; set; }
-        public string Value { get; set; }
-        public bool Short { get; set; }
+        public static string ToHex(this Color c)
+        {
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
     }
 }
