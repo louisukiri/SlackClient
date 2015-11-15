@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Slack.Client.entity;
 using System.Drawing;
 using SlackClientTest.TestObjects;
@@ -149,6 +150,170 @@ namespace SlackClientTest
 
                 Assert.AreEqual(initial+1, _sut.Attachments.Count);
             }
+            [Test]
+            public void CanBeChained()
+            {
+                Assert.IsNotNull(_result);
+                Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class Title
+        {
+            private string _title;
+            private string _randomUri;
+            private SlackMessageTestObject _sutObject;
+            private SlackMessage _result;
+            [SetUp]
+            public void Setup()
+            {
+                _title = Helpers.Random;
+                _randomUri = "http://" + Helpers.Random + ".com/";
+                _sutObject = new SlackMessageTestObject();
+                _sutObject.AddDefaultAttachment();
+
+                _result = _sutObject.Sut.Title(_title, _randomUri);
+            }
+            [Test]
+            public void AddsTitleToLastAttachment()
+            {
+                Assert.AreEqual(_title, _sutObject.DefaultAttachment.Title.Name);
+                Assert.AreEqual(_randomUri, _sutObject.DefaultAttachment.Title.Link.OriginalString);
+            }
+            [Test]
+            public void CreateAttachmentWhenNoneExists()
+            {
+                _sutObject.ResetAttachments();
+                var oldCount = _sutObject.Sut.Attachments.Count;
+                _sutObject.Sut.Title(_title, _randomUri);
+
+                Assert.AreEqual(0, oldCount);
+                Assert.AreEqual(1, _sutObject.Sut.Attachments.Count);
+            }
+
+            [Test]
+            public void SetLinkToNullGivenInvalidUrl()
+            {
+                _sutObject.Sut.Title(Helpers.Random, Helpers.Random);
+                Assert.IsNull(_sutObject.DefaultAttachment.Title.Link);
+            }
+            [Test]
+            public void CanBeChained()
+            {
+                Assert.IsNotNull(_result);
+                Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class Field
+        {
+            private SlackMessageTestObject _testObject;
+            private SlackMessage _result;
+            private string _title;
+            private string _value;
+            private bool _short;
+            [SetUp]
+            public void Setup()
+            {
+                _title = Helpers.Random;
+                _value = Helpers.Random;
+                _short = true;
+
+                _testObject = new SlackMessageTestObject();
+                _testObject.AddDefaultAttachment();
+                _result = _testObject.Sut.Field(_title, _value, _short);
+            }
+            [Test]
+            public void AddsFieldToLastAttachment()
+            {
+                Assert.IsNotNull(_testObject.DefaultAttachment.Fields);
+            }
+            [Test]
+            public void CreateAttachmentIfNoneExists()
+            {
+                _testObject.ResetAttachments();
+                var initialCount = _testObject.Sut.Attachments.Count;
+                _result = _testObject.Sut.Field(_title, _value, _short);
+
+                Assert.AreEqual(0, initialCount);
+                Assert.AreEqual(1, _testObject.Sut.Attachments.Count);
+            }
+            [Test]
+            public void CanBeChained()
+            {
+                Assert.IsNotNull(_result);
+                Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class Fallback
+        {
+            private SlackMessageTestObject _testObject;
+            private SlackMessage _result;
+            private string _fallBack;
+            [SetUp]
+            public void Setup()
+            {
+                _testObject = new SlackMessageTestObject();
+                _testObject.AddDefaultAttachment();
+                _fallBack = Helpers.Random;
+                _result = _testObject.Sut.FallBack(_fallBack);
+            }
+            [Test]
+            public void SetsFallBackOnTheLastAttachment()
+            {
+                Assert.AreEqual(_fallBack, _testObject.DefaultAttachment.Fallback);
+            }
+            [Test]
+            public void CreateNewAttahmentWhenAttachmentEmpty()
+            {
+                _testObject.ResetAttachments();
+                int initial = _testObject.Sut.Attachments.Count;
+
+                _result = _testObject.Sut.FallBack(_fallBack);
+
+                Assert.AreEqual(0, initial);
+                Assert.AreEqual(1, _testObject.Sut.Attachments.Count);
+            }
+
+            [Test]
+            public void CanBeChained()
+            {
+                Assert.IsNotNull(_result);
+                Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class PreText
+        {
+            private SlackMessageTestObject _testObject;
+            private SlackMessage _result;
+            private string _preText;
+            [SetUp]
+            public void Setup()
+            {
+                _testObject = new SlackMessageTestObject();
+                _testObject.AddDefaultAttachment();
+                _preText = Helpers.Random;
+                _result = _testObject.Sut.Pretext(_preText);
+            }
+            [Test]
+            public void SetsPretextOnTheLastAttachment()
+            {
+                Assert.AreEqual(_preText, _testObject.DefaultAttachment.Pretext);
+            }
+            [Test]
+            public void CreateNewAttahmentWhenAttachmentEmpty()
+            {
+                _testObject.ResetAttachments();
+                int initial = _testObject.Sut.Attachments.Count;
+
+                _result = _testObject.Sut.Pretext(_preText);
+
+                Assert.AreEqual(0, initial);
+                Assert.AreEqual(1, _testObject.Sut.Attachments.Count);
+            }
+
             [Test]
             public void CanBeChained()
             {

@@ -64,7 +64,6 @@
     <Compile Include="SlackClientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SlackMessageTest.cs" />
-    <Compile Include="SlackAttachmentTest.cs" />
     <Compile Include="TestObjects\SlackMessageTestObject.cs" />
   </ItemGroup>
   <ItemGroup>

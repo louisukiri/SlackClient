@@ -7,8 +7,7 @@ namespace Slack.Client.entity
 {
     public class SlackMessage
     {
-        private IList<SlackAttachment> _attachments;  
-        public string Username { get; set; }
+        private readonly IList<SlackAttachment> _attachments;
         public IReadOnlyList<SlackAttachment> Attachments {
             get { return _attachments.ToList(); }
         }
@@ -85,6 +84,43 @@ namespace Slack.Client.entity
             {
                 return !_attachments.Any() ? null : LastAttachment.Author;
             }
+        }
+
+        public SlackMessage Title(string title, Uri link)
+        {
+            LastAttachment.Title = new LinkedElement {Link = link, Name = title};
+            return this;
+        }
+        public SlackMessage Title(string title, string link)
+        {
+            Uri linkUri;
+            try
+            {
+                linkUri = new Uri(link);
+            }
+            catch (UriFormatException)
+            {
+                linkUri = null;
+            }
+            return Title(title, linkUri);
+        }
+
+        public SlackMessage Field(string title, string value, bool Short)
+        {
+            LastAttachment.AddField(title, value, Short);
+            return this;
+        }
+
+        public SlackMessage FallBack(string fallbackText)
+        {
+            LastAttachment.Fallback = fallbackText;
+            return this;
+        }
+
+        public SlackMessage Pretext(string text)
+        {
+            LastAttachment.Pretext = text;
+            return this;
         }
     }
     public static class ColorExtension
