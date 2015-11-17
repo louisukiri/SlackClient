@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Slack.Client.entity
@@ -11,6 +12,8 @@ namespace Slack.Client.entity
         public string Pretext { get; set; }
         public SlackAuthor Author { get; set; }
         public LinkedElement Title { get; set; }
+        public Uri ImageUri { get; set; }
+        public Uri ThumbUri { get; set; }
         public string Text { get; set; }
         public IReadOnlyList<SlackField> Fields {
             get { return _fields; }

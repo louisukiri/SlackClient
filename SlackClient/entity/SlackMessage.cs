@@ -8,6 +8,7 @@ namespace Slack.Client.entity
     public class SlackMessage
     {
         private readonly IList<SlackAttachment> _attachments;
+        public string Username { get; set; }
         public IReadOnlyList<SlackAttachment> Attachments {
             get { return _attachments.ToList(); }
         }
@@ -128,6 +129,11 @@ namespace Slack.Client.entity
         public static string ToHex(this Color c)
         {
             return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
+
+        public static Color ToColor(this string Hex)
+        {
+            return ColorTranslator.FromHtml(Hex);
         }
     }
 }
