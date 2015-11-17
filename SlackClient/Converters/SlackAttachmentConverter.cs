@@ -46,19 +46,35 @@ namespace Slack.Client.Converters
             var imageUriProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "imageuri");
             if (imageUriProp != null && attachment.ImageUri != null)
             {
-                imageUriProp.AddAfterSelf(new JProperty("image_url", attachment.ImageUri.OriginalString));
-                imageUriProp.Remove();
+                imageUriProp.Replace("image_url", attachment.ImageUri.OriginalString);
             }
             var thumbUriProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "thumburi");
             if (thumbUriProp != null && attachment.ThumbUri != null)
             {
-                thumbUriProp.AddAfterSelf(new JProperty("thumb_url", attachment.ThumbUri.OriginalString));
-                thumbUriProp.Remove();
+                thumbUriProp.Replace("thumb_url", attachment.ThumbUri.OriginalString);
             }
+
             var colorProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "color");
-            colorProp.Value = attachment.Color.ToHex();
+
+            if (colorProp != null)
+            {
+                colorProp.Replace("color", attachment.Color.ToHex());
+            }
 
             serializer.Serialize(writer, o);
+        }
+    }
+    static class JConvertExtensions
+    {
+        public static void Replace(this JProperty oldProperty, string newPropertyName, string newPropertyValue)
+        {
+            if (String.Equals(oldProperty.Name.ToLower(), newPropertyName.ToLower()))
+            {
+                oldProperty.Value = newPropertyValue;
+                return;
+            }
+            oldProperty.AddAfterSelf(new JProperty(newPropertyName, newPropertyValue));
+            oldProperty.Remove();
         }
     }
 }

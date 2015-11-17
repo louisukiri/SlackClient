@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\LinkedItemConverter.cs" />
+    <Compile Include="Converters\SlackAttachmentConverter.cs" />
     <Compile Include="entity\LinkedElement.cs" />
     <Compile Include="entity\SlackAttachment.cs" />
     <Compile Include="entity\SlackField.cs" />
