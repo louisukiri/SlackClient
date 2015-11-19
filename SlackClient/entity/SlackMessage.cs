@@ -22,6 +22,10 @@ namespace Slack.Client.entity
         public SlackMessage SetMessage(string message)
         {
             Message = message;
+            if (Attachments.Any())
+            {
+                Attachments.Last().Text = message;
+            }
             return this;
         }
 
@@ -87,6 +91,10 @@ namespace Slack.Client.entity
             }
         }
 
+        public SlackMessage Title(string title)
+        {
+            return Title(title,(Uri)null);
+        }
         public SlackMessage Title(string title, Uri link)
         {
             LastAttachment.Title = new LinkedElement {Link = link, Name = title};

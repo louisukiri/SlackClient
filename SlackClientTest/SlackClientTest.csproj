@@ -65,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SlackMessageTest.cs" />
     <Compile Include="TestObjects\SlackMessageTestObject.cs" />
+    <Compile Include="HelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SlackClient\SlackClient.csproj">

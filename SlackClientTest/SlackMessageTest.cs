@@ -52,6 +52,19 @@ namespace SlackClientTest
                 Assert.IsNotNull(_result);
                 Assert.IsInstanceOf<SlackMessage>(_result);
             }
+
+            [Test]
+            public void SetsAttachmentTextWhenPossible()
+            {
+                var randomMessage = Helpers.Random;
+                var attachment = new SlackAttachment{};
+                var sut = new SlackMessage();
+                sut.Attach(attachment);
+
+                sut.SetMessage(randomMessage);
+
+                Assert.AreEqual(randomMessage, attachment.Text);
+            }
         }
         [TestFixture]
         public class As

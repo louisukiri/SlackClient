@@ -27,41 +27,40 @@ namespace Slack.Client.Converters
                 return;
             var o = (JObject) objectToken;
 
+            FlattenAuthorProperty(o, attachment);
+            FlattenTitleProperty(o, attachment);
+
+            //imageuri, thumuri and color all need to be rewritten
+            //their names need to match what slack expects in its payload
+            if(attachment.ImageUri != null)
+                o.Replace("imageuri", "image_url", attachment.ImageUri.OriginalString);
+            if(attachment.ThumbUri != null)
+                o.Replace("thumburi", "thumb_url", attachment.ThumbUri.OriginalString);
+            o.Replace("color", "color", attachment.Color.ToHex());
+
+            serializer.Serialize(writer, o);
+        }
+        private static void FlattenTitleProperty(JObject o, SlackAttachment attachment)
+        {
+            var titleProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "title");
+            if (titleProp != null && attachment.Title != null)
+            {
+                titleProp.Value = attachment.Title.Name;
+                if (attachment.Title.Link != null)
+                    titleProp.AddAfterSelf(new JProperty("title_link", attachment.Title.Link.OriginalString));
+            }
+        }
+
+        private static void FlattenAuthorProperty(JObject o, SlackAttachment attachment)
+        {
             var authorProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "author");
-            if (authorProp != null)
+            if (authorProp != null && attachment.Author != null)
             {
                 authorProp.AddAfterSelf(new JProperty("author_name", attachment.Author.Name));
                 authorProp.AddAfterSelf(new JProperty("author_link", attachment.Author.Link));
                 authorProp.AddAfterSelf(new JProperty("author_icon", attachment.Author.Icon));
                 authorProp.Remove();
             }
-            var titleProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "title");
-            if (titleProp != null && attachment.Title != null)
-            {
-                
-                titleProp.Value = attachment.Title.Name;
-                if(attachment.Title.Link != null)
-                    titleProp.AddAfterSelf(new JProperty("title_link", attachment.Title.Link.OriginalString));
-            }
-            var imageUriProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "imageuri");
-            if (imageUriProp != null && attachment.ImageUri != null)
-            {
-                imageUriProp.Replace("image_url", attachment.ImageUri.OriginalString);
-            }
-            var thumbUriProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "thumburi");
-            if (thumbUriProp != null && attachment.ThumbUri != null)
-            {
-                thumbUriProp.Replace("thumb_url", attachment.ThumbUri.OriginalString);
-            }
-
-            var colorProp = o.Children<JProperty>().FirstOrDefault(z => z.Name == "color");
-
-            if (colorProp != null)
-            {
-                colorProp.Replace("color", attachment.Color.ToHex());
-            }
-
-            serializer.Serialize(writer, o);
         }
     }
     static class JConvertExtensions
@@ -75,6 +74,11 @@ namespace Slack.Client.Converters
             }
             oldProperty.AddAfterSelf(new JProperty(newPropertyName, newPropertyValue));
             oldProperty.Remove();
+        }
+        public static void Replace(this JObject jsonObject, string currentPropertyName, string newPropertyName, string newPropertyValue)
+        {
+            var oldProperty = jsonObject.Children<JProperty>().FirstOrDefault(z => z.Name == currentPropertyName);
+            oldProperty.Replace(newPropertyName, newPropertyValue);
         }
     }
 }

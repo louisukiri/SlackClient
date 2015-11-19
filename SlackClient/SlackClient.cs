@@ -25,6 +25,12 @@ namespace Slack.Client
             string text = GetJson(content);
             Say(text);
         }
+
+        public void Send(SlackMessage message)
+        {
+            string text = GetJson(message);
+            Say(text);
+        }
         public string GetJson(SlackMessage message)
         {
             var settings = new JsonSerializerSettings {ContractResolver = new LowerCaseContractResolver()};
