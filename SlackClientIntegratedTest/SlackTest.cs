@@ -22,15 +22,20 @@ namespace SlackClientIntegratedTest
             sut.Send("testing send " + Guid.NewGuid());
         }
 
-        [Test, Category("Integrated Test"),Ignore]
+        [Test, Category("Integrated Test")]
         public void ComplicatedTalk()
         {
             var msg = new SlackMessage();
+            
             msg.Title("Testing *title*")
                 .FallBack("this is fallbacktext")
-                .Color(Color.Indigo)
-                .SetMessage("okay jim ok")
-                .As("Louis")
+                .UsingLeftBarColor(Color.Orange)
+                .WithMessageText("okayhhiuo *jim* ok - _italic?_ <mailto:bob@example.com|Bob>")
+                .AsAuthor("Louis")
+                .AsUser("Some User")
+                .Field("Coverage Result", "10%\n20%\n30%", true)
+                .Field("Package Name", "godaddy.domain.cicd.trigger", true)
+                .SetTextAsMarkDownField()
                 ;
             
             sut.Send(msg);

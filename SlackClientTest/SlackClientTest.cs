@@ -110,9 +110,8 @@ namespace SlackClientTest
                 _attachment.AddField(_fieldTitle, _fieldValue, _fieldShort);
                 _message = new SlackMessage
                 {
-                    Username = _username
                 };
-                _message.SetMessage(_text);
+                _message.WithMessageText(_text);
                 _message.Attach(_attachment);
 
                 _json = sut.GetJson(_message);

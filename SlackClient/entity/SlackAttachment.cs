@@ -4,6 +4,13 @@ using System.Drawing;
 
 namespace Slack.Client.entity
 {
+    [Flags]
+    public enum SlackTextFields
+    {
+        Text = 1
+        ,Pretext=2
+        ,Fields=4
+    }
     public class SlackAttachment
     {
         private readonly List<SlackField> _fields = new List<SlackField>(); 
@@ -18,7 +25,7 @@ namespace Slack.Client.entity
         public IReadOnlyList<SlackField> Fields {
             get { return _fields; }
         }
-
+        public SlackTextFields MarkdownFields { get; set; }
         public void AddField(string title, string value, bool Short)
         {
             AddField(new SlackField

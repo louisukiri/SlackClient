@@ -39,7 +39,7 @@ namespace SlackClientTest
             public void Setup()
             {
                 _message = Helpers.Random;
-                _result = _sut.SetMessage(_message);
+                _result = _sut.WithMessageText(_message);
             }
             [Test]
             public void SetsMessage()
@@ -61,7 +61,7 @@ namespace SlackClientTest
                 var sut = new SlackMessage();
                 sut.Attach(attachment);
 
-                sut.SetMessage(randomMessage);
+                sut.WithMessageText(randomMessage);
 
                 Assert.AreEqual(randomMessage, attachment.Text);
             }
@@ -77,13 +77,13 @@ namespace SlackClientTest
             public void SetUp()
             {
                 SutTestObject.AddDefaultAttachment();
-                SutTestObject.Result = SutTestObject.Sut.As(AuthorName, AuthorIcon, AuthorLink);
+                SutTestObject.Result = SutTestObject.Sut.AsAuthor(AuthorName, AuthorIcon, AuthorLink);
             }
             [Test]
             public void CreatesAttachmentIfNoCurrentAttachment()
             {
                 var sut = new SlackMessage();
-                sut.As(AuthorName, AuthorIcon, AuthorLink);
+                sut.AsAuthor(AuthorName, AuthorIcon, AuthorLink);
                 Assert.AreEqual(1, sut.Attachments.Count);
             }
             [Test]
@@ -98,7 +98,7 @@ namespace SlackClientTest
             public void SetsAuthorLinkToNullIfInvalidUrl()
             {
                 var sutTestObject = new SlackMessageTestObject();
-                sutTestObject.Sut.As(Helpers.Random, AuthorIcon, Helpers.Random);
+                sutTestObject.Sut.AsAuthor(Helpers.Random, AuthorIcon, Helpers.Random);
 
                 Assert.IsNull(sutTestObject.Sut.Author.Link);
             }
@@ -106,7 +106,7 @@ namespace SlackClientTest
             public void SetsAuthorIconToNullIfInvalidUri()
             {
                 var sutTestObject = new SlackMessageTestObject();
-                sutTestObject.Sut.As(Helpers.Random, Helpers.Random, AuthorLink);
+                sutTestObject.Sut.AsAuthor(Helpers.Random, Helpers.Random, AuthorLink);
 
                 Assert.IsNull(sutTestObject.Sut.Author.Icon);
             }
@@ -126,13 +126,13 @@ namespace SlackClientTest
             {
                 SutTestObject.AddDefaultAttachment();
                 SutTestObject.Result = SutTestObject.Sut
-                    .Color(SutTestObject.Color);
+                    .UsingLeftBarColor(SutTestObject.Color);
             }
             [Test]
             public void CreatesAttachmentIfNoCurrentAttachment()
             {
                 var sut = new SlackMessage();
-                sut.Color(Color.GreenYellow);
+                sut.UsingLeftBarColor(Color.GreenYellow);
                 Assert.AreEqual(1, sut.Attachments.Count);
             }
             [Test]
@@ -161,13 +161,59 @@ namespace SlackClientTest
 
                 _result = _sut.Attach(attachment);
 
-                Assert.AreEqual(initial+1, _sut.Attachments.Count);
+                Assert.AreEqual(initial + 1, _sut.Attachments.Count);
             }
             [Test]
             public void CanBeChained()
             {
                 Assert.IsNotNull(_result);
                 Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class SetMarkdownField
+        {
+            public SlackMessageTestObject SutTestObject;
+            [SetUp]
+            public void SetUp()
+            {
+                SutTestObject = new SlackMessageTestObject();
+                SutTestObject.AddDefaultAttachment();
+            }
+            [Test]
+            public void OnTextField()
+            {
+                SutTestObject.Result = SutTestObject.Sut.SetTextAsMarkDownField();
+                Assert.AreEqual(SlackTextFields.Text, SutTestObject.DefaultAttachment.MarkdownFields);
+            }
+            [Test]
+            public void OnPreTextField()
+            {
+                SutTestObject.Result = SutTestObject.Sut.SetPretextAsMarkDown();
+                Assert.AreEqual(SlackTextFields.Pretext, SutTestObject.DefaultAttachment.MarkdownFields);
+            }
+            [Test]
+            public void OnFieldsField()
+            {
+                SutTestObject.Result = SutTestObject.Sut.SetFieldsAsMarkDown();
+                Assert.AreEqual(SlackTextFields.Fields, SutTestObject.DefaultAttachment.MarkdownFields);
+            }
+            [Test]
+            public void CanBeStacked()
+            {
+                SutTestObject.Result = SutTestObject.Sut
+                    .SetFieldsAsMarkDown()
+                    .SetPretextAsMarkDown();
+
+                Assert.IsTrue(SutTestObject.DefaultAttachment.MarkdownFields.HasFlag(SlackTextFields.Fields));
+                Assert.IsTrue(SutTestObject.DefaultAttachment.MarkdownFields.HasFlag(SlackTextFields.Pretext));
+            }
+            [Test]
+            public void CanBeChained()
+            {
+                SutTestObject.Result = SutTestObject.Sut.SetTextAsMarkDownField();
+                Assert.IsNotNull(SutTestObject.Result);
+                Assert.IsInstanceOf<SlackMessage>(SutTestObject.Result);
             }
         }
         [TestFixture]

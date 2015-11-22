@@ -8,7 +8,7 @@ namespace Slack.Client.entity
     public class SlackMessage
     {
         private readonly IList<SlackAttachment> _attachments;
-        public string Username { get; set; }
+        public string Username { get; private set; }
         public IReadOnlyList<SlackAttachment> Attachments {
             get { return _attachments.ToList(); }
         }
@@ -19,7 +19,7 @@ namespace Slack.Client.entity
         {
             _attachments = new List<SlackAttachment>();
         }
-        public SlackMessage SetMessage(string message)
+        public SlackMessage WithMessageText(string message)
         {
             Message = message;
             if (Attachments.Any())
@@ -46,13 +46,17 @@ namespace Slack.Client.entity
                 return _attachments.Last();
             }
         }
-        public SlackMessage Color(Color color)
+        public SlackMessage UsingLeftBarColor(Color color)
         {
             LastAttachment.Color = color;
             return this;
         }
-
-        public SlackMessage As(string authorName, string authorIconUri="", string authorLinkUri="")
+        public SlackMessage AsUser(string UserName)
+        {
+            this.Username = UserName;
+            return this;
+        }
+        public SlackMessage AsAuthor(string authorName, string authorIconUri="", string authorLinkUri="")
         {
             Uri authorLink;
             Uri authorIcon;
@@ -129,6 +133,27 @@ namespace Slack.Client.entity
         public SlackMessage Pretext(string text)
         {
             LastAttachment.Pretext = text;
+            return this;
+        }
+
+        public SlackMessage SetTextAsMarkDownField()
+        {
+            LastAttachment.MarkdownFields |= SlackTextFields.Text;
+
+            return this;
+        }
+
+        public SlackMessage SetPretextAsMarkDown()
+        {
+            LastAttachment.MarkdownFields |= SlackTextFields.Pretext;
+
+            return this;
+        }
+
+        public SlackMessage SetFieldsAsMarkDown()
+        {
+            LastAttachment.MarkdownFields |= SlackTextFields.Fields;
+
             return this;
         }
     }

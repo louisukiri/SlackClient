@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Slack.Client.entity;
 using Slack.Client.Resolvers;
+using System.Collections.Generic;
 
 namespace SlackClientTest
 {
@@ -28,7 +29,7 @@ namespace SlackClientTest
         public void ConvertsAllKeysAndValuesToLowerCase()
         {
             var message = Helpers.Random;
-            _slackMessage.SetMessage(message);
+            _slackMessage.WithMessageText(message);
 
             var result = JsonConvert.SerializeObject(message, settings);
 
@@ -145,7 +146,29 @@ namespace SlackClientTest
             Assert.IsNotNull(val, message: "\"" + path + "\" does not exist in serialized JSON");
             Assert.AreEqual(colorName.ToHex(), val.ToString());
         }
+        [TestCase(SlackTextFields.Text, "text")]
+        [TestCase(SlackTextFields.Pretext, "pretext")]
+        [TestCase(SlackTextFields.Fields, "fields")]
+        public void ReturnsMarkdwnArrayFor(SlackTextFields slackTextFields, string expected) {
+            const string path = "attachments[0].mrkdwn_in";
+            _attachment.MarkdownFields = slackTextFields;
 
+            var val = Act(path,false);
+
+            Assert.IsNotNull(val, message: "\"" + path + "\" does not exist in serialized JSON");
+            var valArray = val.ToObject<List<string>>();
+            Assert.IsTrue(valArray.Contains(expected));
+        }
+        [Test]
+        public void RemovesMarkDownFields()
+        {
+            const string path = "attachments[0].markdownfields";
+            _attachment.MarkdownFields = SlackTextFields.Pretext;
+
+            var val = Act(path, false);
+
+            Assert.IsNull(val, message: "\"" + path + "\" exists in serialized JSON");
+        }
         private JToken Act(string path, bool errorWhenNoMatch=true)
         {
             var result = JsonConvert.SerializeObject(_slackMessage, settings);
