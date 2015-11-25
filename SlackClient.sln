@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackClient", "SlackClient\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackClientTest", "SlackClientTest\SlackClientTest.csproj", "{79C7ED38-88EE-44D0-9A92-AACFAA68264C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackClientIntegratedTest", "SlackClientIntegratedTest\SlackClientIntegratedTest.csproj", "{13A078CA-C18A-4564-BC8C-2E7414EAFC9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79C7ED38-88EE-44D0-9A92-AACFAA68264C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13A078CA-C18A-4564-BC8C-2E7414EAFC9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13A078CA-C18A-4564-BC8C-2E7414EAFC9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13A078CA-C18A-4564-BC8C-2E7414EAFC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13A078CA-C18A-4564-BC8C-2E7414EAFC9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
