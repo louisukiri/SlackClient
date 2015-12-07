@@ -57,17 +57,19 @@ namespace SlackClientTest
             private Uri _imageUrl;
             private string _json;
             private Dictionary<string, string> _JsonPathAndValues;
+            private string messageString;
                 
             [SetUp]
             public void Setup()
             {
+                messageString = Helpers.Random;
                 sut = new SlackClient(Helpers.RandomUri.OriginalString);
                 _JsonPathAndValues = new Dictionary<string, string>
                 {
                     {"attachments[0].fallback",Helpers.Random}
                     ,{"attachments[0].color",Color.Gold.ToHex()}
                     ,{"attachments[0].pretext",Helpers.Random}
-                    ,{"attachments[0].text",Helpers.Random}
+                    ,{"attachments[0].text",messageString}
                     ,{"attachments[0].author_name",Helpers.Random}
                     ,{"attachments[0].author_icon",Helpers.RandomUri.OriginalString}
                     ,{"attachments[0].author_link",Helpers.RandomUri.OriginalString}
@@ -79,6 +81,7 @@ namespace SlackClientTest
                     ,{"attachments[0].image_url",Helpers.RandomUri.OriginalString}
                     ,{"attachments[0].thumb_url",Helpers.RandomUri.OriginalString}
                     ,{"username",Helpers.Random}
+                    , {"text",messageString }
                 };
                 _fallback = _JsonPathAndValues["attachments[0].fallback"];
                 _pretext = _JsonPathAndValues["attachments[0].pretext"];
@@ -132,6 +135,7 @@ namespace SlackClientTest
             [TestCase("attachments[0].fields[0].title")]
             [TestCase("attachments[0].fields[0].value")]
             [TestCase("attachments[0].fields[0].short")]
+            [TestCase("text")]
             public void ReturnsJsonPath(string path)
             {
                 var jObject = JObject.Parse(_json);

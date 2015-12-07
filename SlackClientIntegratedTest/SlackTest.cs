@@ -42,5 +42,26 @@ namespace SlackClientIntegratedTest
 
             
         }
+        [Test, Category("Integrated Test")]
+        public void MoreTalking()
+        {
+            string Content = @"The Results of testing are:
+BusinessObjects.DB.Tests-nunitTestResults *Errors:0
+BusinessObjects.DB.Tests-nunitTestResults *Failures* :6
+BusinessObjects.DB.Tests-nunitTestResults *Totals* :0
+BusinessObjects.Domains.Tests-nunitTestResults *Errors:0
+BusinessObjects.Domains.Tests-nunitTestResults *Failures* :64
+BusinessObjects.Domains.Tests-nunitTestResults *Totals* :0
+DCCWeb.Tests-nunitTestResults *Errors:0
+DCCWeb.Tests-nunitTestResults *Failures* :11
+DCCWeb.Tests-nunitTestResults *Totals* :0";
+
+            sut = new SlackClient(new Uri("https://hooks.slack.com/services/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").ToString());
+            var msg = new SlackMessage();
+            //msg.Attach(new SlackAttachment());
+            msg.WithMessageText(Content);
+
+            sut.Send(msg);
+        }
     }
 }
