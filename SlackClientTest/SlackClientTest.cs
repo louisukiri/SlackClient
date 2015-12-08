@@ -116,6 +116,7 @@ namespace SlackClientTest
                 };
                 _message.WithMessageText(_text);
                 _message.Attach(_attachment);
+                _message.AsUser(_username);
 
                 _json = sut.GetJson(_message);
             }

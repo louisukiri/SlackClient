@@ -3,6 +3,9 @@ using NUnit.Framework;
 using Slack.Client.entity;
 using System.Drawing;
 using SlackClientTest.TestObjects;
+using System.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SlackClientTest
 {
@@ -373,6 +376,99 @@ namespace SlackClientTest
                 Assert.AreEqual(1, _testObject.Sut.Attachments.Count);
             }
 
+            [Test]
+            public void CanBeChained()
+            {
+                Assert.IsNotNull(_result);
+                Assert.IsInstanceOf<SlackMessage>(_result);
+            }
+        }
+        [TestFixture]
+        public class Data
+        {
+
+            private SlackMessageTestObject _testObject;
+            private SlackMessage _result;
+            private string _preText;
+            private DataTable testTable;
+            private int _columcount = -1;
+            private int _rowcount = -1;
+            private IList<string> _columnNames;
+            private IDictionary<string, IList<string>> _data;
+            
+            [SetUp]
+            public void Setup()
+            {
+                _testObject = new SlackMessageTestObject();
+                _testObject.AddDefaultAttachment();
+                _columcount = Helpers.RandomNumber(1, 4);
+                _rowcount = Helpers.RandomNumber(1, 4);
+                _columnNames = new List<string>();
+                _data = new Dictionary<string, IList<string>>();
+                testTable = new DataTable();
+
+                for(int i=0; i < _columcount; i++)
+                {
+                    string name = Helpers.Random;
+                    _columnNames.Add(name);
+                    testTable.Columns.Add(name);
+                    _data.Add(name, new List<string>());
+                }
+                
+                for(int i=0; i < _rowcount; i++)
+                {
+                    DataRow drow = testTable.NewRow();
+                    foreach(DataColumn dcol in testTable.Columns)
+                    {
+                        var value = Helpers.Random;
+                        drow[dcol] = value;
+                        _data[dcol.ColumnName].Add(value);
+                    }
+                    testTable.Rows.Add(drow);
+                }
+                _result = _testObject.Sut.AddData(testTable);
+            }
+            [Test]
+            public void CreateNewAttachmentWhenAttachmentEmpty()
+            {
+                _testObject.ResetAttachments();
+                int initial = _testObject.Sut.Attachments.Count;
+
+                _result = _testObject.Sut.AddData(testTable);
+
+                Assert.AreEqual(0, initial);
+                Assert.AreEqual(1, _testObject.Sut.Attachments.Count);
+            }
+            [Test]
+            public void AddsFieldPerColumn()
+            {
+                _testObject = new SlackMessageTestObject();
+                _testObject.AddDefaultAttachment();
+                var initial = _testObject.DefaultAttachment.Fields.Count;
+
+                _result = _testObject.Sut.AddData(testTable);
+
+                Assert.AreEqual(initial + _columcount,
+                    _testObject.DefaultAttachment.Fields.Count,
+                    "Added " + (initial + _columcount).ToString() + " Fields");
+            }
+            [Test]
+            public void AddsRowsAsValuesUnderColumns()
+            {
+                int randomColumn = Helpers.RandomNumber(0, _columcount);
+                string columnname = _columnNames[randomColumn];
+                IList<string> columnValues = _data[columnname];
+
+                foreach(var colVal in columnValues)
+                {
+                    if(!_testObject.DefaultAttachment
+                        .Fields.Any(z => z.Value.Contains(colVal)))
+                    {
+                        Assert.Fail(string.Format("Could not find value '{0}' under column {1}({2})", colVal, columnname, randomColumn.ToString()));
+                        break;
+                    }
+                }
+            }
             [Test]
             public void CanBeChained()
             {

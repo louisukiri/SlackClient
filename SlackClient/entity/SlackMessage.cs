@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 
@@ -154,6 +155,21 @@ namespace Slack.Client.entity
         {
             LastAttachment.MarkdownFields |= SlackTextFields.Fields;
 
+            return this;
+        }
+
+        public SlackMessage AddData(DataTable Table)
+        {
+            foreach(DataColumn column in Table.Columns)
+            {
+                string val = string.Empty;
+                foreach(DataRow row in Table.Rows)
+                {
+                    val += row[column].ToString()+"\n";
+                }
+                val = val.TrimEnd('\n');
+                Field(column.ColumnName, val, true);
+            }
             return this;
         }
     }

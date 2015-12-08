@@ -30,7 +30,7 @@ namespace SlackClientTest
         }
         public static int RandomNumber(int min = 0, int max = 100000)
         {
-            return new Random().Next(min, max);
+            return new Random((int)DateTime.Now.Ticks & 0x0000FFFF).Next(min, max);
         }
     }
 }

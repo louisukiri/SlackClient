@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Newtonsoft.Json;
-using Slack.Client.Converters;
 using Slack.Client.entity;
 using Slack.Client.Resolvers;
 
