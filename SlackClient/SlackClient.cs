@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Newtonsoft.Json;
-using Slack.Client.Converters;
 using Slack.Client.entity;
 using Slack.Client.Resolvers;
 
@@ -33,7 +31,9 @@ namespace Slack.Client
         }
         public string GetJson(SlackMessage message)
         {
-            var settings = new JsonSerializerSettings {ContractResolver = new LowerCaseContractResolver()};
+            var settings = new JsonSerializerSettings {ContractResolver = new LowerCaseContractResolver()
+                , NullValueHandling = NullValueHandling.Ignore
+            };
             //settings.Converters.Add(new LinkedItemConverter());
 
             return JsonConvert.SerializeObject(message, settings);

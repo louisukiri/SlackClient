@@ -15,7 +15,7 @@ namespace Slack.Client.entity
     {
         private readonly List<SlackField> _fields = new List<SlackField>(); 
         public string Fallback { get; set; }
-        public Color Color { get; set; }
+        public Color Color = Color.Transparent;
         public string Pretext { get; set; }
         public SlackAuthor Author { get; set; }
         public LinkedElement Title { get; set; }
