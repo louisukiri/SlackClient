@@ -475,11 +475,6 @@ namespace SlackClientTest
                 Assert.IsNotNull(_result);
                 Assert.IsInstanceOf<SlackMessage>(_result);
             }
-            [Test]
-            public void MeantToFail()
-            {
-                Assert.IsTrue(false);
-            }
         }
     }
 }

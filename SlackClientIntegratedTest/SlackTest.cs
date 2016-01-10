@@ -43,6 +43,12 @@ namespace SlackClientIntegratedTest
 
             
         }
+
+        [Test]
+        public void MeantToFail()
+        {
+            Assert.IsTrue(false);
+        }
         [Test, Category("Integrated Test"), Ignore]
         public void MoreTalking()
         {
